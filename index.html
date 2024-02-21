@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposal</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-image: url('/Users/apoorvgupta/vanya-proposal/choice1.jpeg'); /* Change 'background.jpg' to the path of your background image */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: #fff;
+        }
+        #question {
+            font-size: 36px;
+            margin-bottom: 20px;
+            font-family: 'Baskerville', serif;
+            position: fixed; /* Fixed position */
+            top: 100px; /* Adjust as needed */
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999; /* Ensure it's on top */
+        }
+        .btn {
+            padding: 10px 20px;
+            margin: 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 18px;
+        }
+        #no {
+            background-color: red;
+            position: fixed;
+            top: 200px;
+            right: 42%;
+        }
+        #yes {
+            background-color: green;
+            position: fixed;
+            top: 200px;
+            left: 42%;
+        }
+        #response {
+            font-family: 'Baskerville', serif;
+            color: #7a0214;
+            margin-top: -60px;
+            font-size: 24px;
+            padding: 10px; /* Padding inside the box */
+            max-width: 25%; /* Maximum width of the box */
+            box-sizing: border-box; /* Include border and padding in the width calculation */
+        }
+        #link {
+            display: none;
+            margin-top: 20px;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div id="question" style="color: #950217;">Will you be my girlfriend, little mouse?</div>
+    <button id="yes" class="btn">Yes</button>
+    <button id="no" class="btn">No</button>
+    <div id="response"></div>
+    <div id="link"></div>
+
+    <script>
+        const yesButton = document.getElementById('yes');
+        const noButton = document.getElementById('no');
+        const responseDiv = document.getElementById('response');
+        const linkDiv = document.getElementById('link');
+
+        let animationStarted = false;
+
+        yesButton.addEventListener('click', () => {
+            if(!animationStarted){
+                animationStarted = true
+                responseDiv.textContent = "That's my good girl.\nCongratulations little mouse.\nYou are officially mine now!!!";
+                responseDiv.style.display = 'block';
+                responseDiv.style.whiteSpace = 'pre-line';
+                linkDiv.innerHTML = "<a href='letter.html' target='_blank'>Next Page</a>";
+                linkDiv.style.display = 'block';
+                noButton.style.display = 'none'
+                yesButton.style.display = 'none'
+                confettiAnimation()
+            }
+        });
+
+        noButton.addEventListener('click', () => {
+            responseDiv.textContent = "Somebody's being a bad girl.\nNo is not an option for you.\nYou belong to me.\n\nNow lets try that again.";
+            responseDiv.style.display = 'block';
+            responseDiv.style.whiteSpace = 'pre-line';
+        });
+
+        function confettiAnimation() {
+            const confettiCanvas = document.createElement('canvas');
+            confettiCanvas.style.position = 'fixed';
+            confettiCanvas.style.top = '0';
+            confettiCanvas.style.left = '0';
+            confettiCanvas.style.pointerEvents = 'none';
+            confettiCanvas.style.zIndex = '10000';
+            confettiCanvas.width = window.innerWidth;
+            confettiCanvas.height = window.innerHeight;
+            document.body.appendChild(confettiCanvas);
+            const ctx = confettiCanvas.getContext('2d');
+
+            const rosePetalImage = new Image();
+            rosePetalImage.src = 'rose.png';
+
+            const petals = [];
+            const numberOfPetals = 200;
+            function generatePetals() {
+                petals.length = 0; // Clear the existing petals
+                for (let i = 0; i < numberOfPetals; i++) {
+                    petals.push({
+                        x: Math.random() * window.innerWidth,
+                        y: -Math.random() * window.innerHeight, // Start above the viewport
+                        angle: Math.random() * Math.PI * 2, // Random angle for rotation
+                        speed: Math.random() * 2 + 1 // Random speed
+                    });
+                }
+            }
+
+            generatePetals(); // Generate petals initially
+
+            // Define the desired width and height for the rose petal image
+            const petalWidth = 20; // Adjust as needed
+            const petalHeight = 20; // Adjust as needed
+
+            function drawPetals() {
+                ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+                petals.forEach(petal => {
+                    ctx.save();
+                    ctx.translate(petal.x, petal.y);
+                    ctx.rotate(petal.angle);
+                    ctx.drawImage(rosePetalImage, -petalWidth / 2, -petalHeight / 2, petalWidth, petalHeight);
+                    ctx.restore();
+                    petal.y += petal.speed; // Move petals down
+                    if (petal.y > window.innerHeight) {
+                        petal.y = -petalHeight; // Reset petals above viewport when they fall out of view
+                        petal.x = Math.random() * window.innerWidth; // Randomize x position
+                    }
+                });
+                requestAnimationFrame(drawPetals);
+            }
+
+            drawPetals();
+        }
+    </script>
+
+    <canvas id="confetti-canvas" style="display: none;"></canvas>
+</body>
+</html>
